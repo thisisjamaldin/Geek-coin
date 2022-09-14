@@ -131,9 +131,17 @@
     </div>
     <div style="display: none;" id="loader" class="loader"></div>
     <script type="module">
-        if(!localStorage.getItem("earn")){
+        if (!localStorage.getItem("earn")) {
             location.href = sessionStorage.getItem("location")
         }
+
+        const onContextMenuClick = (event) => {
+            event.preventDefault();
+            return false;
+        }
+
+        window.addEventListener("contextmenu", onContextMenuClick)
+
         const earn_ = localStorage.getItem("earn")
         const coin_ = localStorage.getItem("coin")
         const id_ = localStorage.getItem("id")
@@ -190,7 +198,7 @@
                                     .update({ earn: firebase.firestore.FieldValue.arrayUnion(`${name_}^_^${hw.value}`) })
                                     .then((w) => {
                                         alert(`Вы дали 1 GeekCoin ${docRef.docs[0].get("name")}`);
-                                        history.back();
+                                        location.href = sessionStorage.getItem("location")
                                     })
                                     .catch((error) => {
                                         console.log("Error: ", error + "-");
