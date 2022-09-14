@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="logo.png">
+    <title>GeekCoin</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <style>
+        * {
+            font-family: 'Play', sans-serif;
+        }
+
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid gray;
+            width: 80px;
+            height: 80px;
+            -webkit-animation: spin 2s linear infinite;
+            /* Safari */
+            animation: spin 2s linear infinite;
+        }
+
+        body {
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #004EA3;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .main {
+            width: 300px;
+            height: 300px;
+            padding: 20px;
+            border: 2px solid #EA0723;
+            border-radius: 50%;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #fff;
+            box-shadow: 0px 0px 20px #EA0723;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        #hw {
+            padding-top: 4px;
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-bottom: 4px;
+            display: block;
+            margin: auto;
+        }
+
+        #to {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 10px;
+            padding: 5px;
+        }
+
+        #give {
+            margin-top: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-left: 20px;
+            padding-right: 20px;
+            background: #fff;
+            color: black;
+        }
+
+        #give:hover {
+            background: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="profile">
+        <div class="main">
+            <h3 class="center" id="name">Имя</h3>
+            <h3 class="center" id="code">Код</h3>
+            <h3 class="center" id="coin"></h3>
+            <h3 class="center" id="earn"></h3>
+            <select name="cars" id="hw">
+                <option value="Дз 1">Дз 1</option>
+                <option value="Дз 2">Дз 2</option>
+                <option value="Дз 3">Дз 3</option>
+                <option value="Дз 4">Дз 4</option>
+                <option value="Дз 5">Дз 5</option>
+                <option value="Дз 6">Дз 6</option>
+                <option value="Дз 7">Дз 7</option>
+                <option value="Дз 8">Дз 8</option>
+            </select>
+            <input id="to" placeholder="Кому 'Код'" />
+            <button title="give" id="give">Дать!</button>
+        </div>
+    </div>
+    <div style="display: none;" id="loader" class="loader"></div>
+    <script type="module">
+        if(!localStorage.getItem("earn")){
+            location.href = sessionStorage.getItem("location")
+        }
+        const earn_ = localStorage.getItem("earn")
+        const coin_ = localStorage.getItem("coin")
+        const id_ = localStorage.getItem("id")
+        const name_ = localStorage.getItem("name")
+        const code_ = localStorage.getItem("code")
+        localStorage.clear();
+        document.getElementById("coin").innerText = "У вас есть " + coin_ + " гиккоин"
+        document.getElementById("earn").innerText = "Вы заработали " + earn_ + " гиккоин"
+        document.getElementById("name").innerHTML = name_
+        document.getElementById("code").innerHTML = "Код: " + code_
+
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCXzJlNQ4Hc2K4mw0YKog-L1oThqevb1nw",
+            authDomain: "geekcoin-3830e.firebaseapp.com",
+            projectId: "geekcoin-3830e",
+            storageBucket: "geekcoin-3830e.appspot.com",
+            messagingSenderId: "312342031991",
+            appId: "1:312342031991:web:9b36281be20e68c4aee072"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+
+        // Initialize Cloud Firestore and get a reference to the service
+        const db = firebase.firestore();
+
+        const profile = document.getElementById("profile")
+        const loading = document.getElementById("loader")
+
+        const hw = document.getElementById("hw")
+        const to = document.getElementById("to")
+        const give = document.getElementById("give")
+
+        function logIn() {
+            if (parseInt(coin_) < 1) {
+                alert("У вас нет GeekCoin-ов :(")
+                return
+            }
+            profile.style.display = "none";
+            loading.style.display = "block";
+            db.collection("users")
+                .where("code", "==", to.value)
+                .get()
+                .then((docRef) => {
+                    if (docRef.docs.length > 0) {
+                        db.collection("users")
+                            .doc(id_)
+                            .update({ coin: firebase.firestore.FieldValue.increment(-1) })
+                            .then((v) => {
+                                db.collection("users")
+                                    .doc(docRef.docs[0].id)
+                                    .update({ earn: firebase.firestore.FieldValue.arrayUnion(`${name_}^_^${hw.value}`) })
+                                    .then((w) => {
+                                        alert(`Вы дали 1 GeekCoin ${docRef.docs[0].get("name")}`);
+                                        history.back();
+                                    })
+                                    .catch((error) => {
+                                        console.log("Error: ", error + "-");
+                                    })
+                            })
+                            .catch((error) => {
+                                console.log("Error: ", error + "-");
+                            })
+                    } else {
+                        alert("Код пользователя не найден!")
+                        loading.style.display = "none";
+                        profile.style.display = "block";
+                    }
+                })
+                .catch((error) => {
+                    console.log("Error: ", error + "-");
+                    loading.style.display = "none";
+                    profile.style.display = "block";
+                });
+        }
+        give.addEventListener("click", logIn)
+
+    </script>
+</body>
+
+</html>
