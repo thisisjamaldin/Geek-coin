@@ -182,6 +182,10 @@
                 alert("У вас нет GeekCoin-ов :(")
                 return
             }
+            if (to.value == code_) {
+                alert("Кому кому? Но себе вы не можете дать :)")
+                return
+            }
             profile.style.display = "none";
             loading.style.display = "block";
             db.collection("users")
