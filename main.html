@@ -112,7 +112,6 @@
     <div id="profile">
         <div class="main">
             <h3 class="center" id="name">Имя</h3>
-            <h3 class="center" id="code">Код</h3>
             <h3 class="center" id="coin"></h3>
             <h3 class="center" id="earn"></h3>
             <select name="cars" id="hw">
@@ -124,6 +123,7 @@
                 <option value="Дз 6">Дз 6</option>
                 <option value="Дз 7">Дз 7</option>
                 <option value="Дз 8">Дз 8</option>
+                <option value="Доп">Доп</option>
             </select>
             <input id="to" placeholder="Кому 'Код'" />
             <button title="give" id="give">Дать!</button>
@@ -146,12 +146,10 @@
         const coin_ = localStorage.getItem("coin")
         const id_ = localStorage.getItem("id")
         const name_ = localStorage.getItem("name")
-        const code_ = localStorage.getItem("code")
         localStorage.clear();
         document.getElementById("coin").innerText = "У вас есть " + coin_ + " гиккоин"
         document.getElementById("earn").innerText = "Вы заработали " + earn_ + " гиккоин"
         document.getElementById("name").innerHTML = name_
-        document.getElementById("code").innerHTML = "Код: " + code_
 
 
         const firebaseConfig = {
@@ -182,7 +180,7 @@
                 alert("У вас нет GeekCoin-ов :(")
                 return
             }
-            if (to.value == code_) {
+            if (to.value == name_) {
                 alert("Кому кому? Но себе вы не можете дать :)")
                 return
             }
