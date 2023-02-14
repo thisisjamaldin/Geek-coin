@@ -187,7 +187,7 @@
             profile.style.display = "none";
             loading.style.display = "block";
             db.collection("users")
-                .where("code", "==", to.value)
+                .where("name", "==", to.value)
                 .get()
                 .then((docRef) => {
                     if (docRef.docs.length > 0) {
