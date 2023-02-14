@@ -114,7 +114,7 @@
         <div id="content">
             <form>
                 <label id="label">Войти</label>
-                <input placeholder="Код" id="code" />
+                <input placeholder="Фамилия Имя" id="code" />
                 <input type="password" placeholder="Пароль" id="password" />
                 <button id="log_in">Войти</button>
             </form>
@@ -157,7 +157,7 @@
             register.style.display = "none";
             loading.style.display = "block";
             db.collection("users")
-                .where("code", "==", code.value)
+                .where("name", "==", code.value)
                 .where("password", "==", password.value)
                 .get()
                 .then((docRef) => {
@@ -173,7 +173,7 @@
                         self.location = "main.html"
                         
                     } else {
-                        alert("Код или пароль неверны")
+                        alert("Имя или пароль неверны")
                         loading.style.display = "none";
                         register.style.display = "block";
                     }
